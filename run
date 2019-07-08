@@ -1,0 +1,8 @@
+#!/bin/bash
+rebar3 tar
+rm -rf run_dir
+mkdir run_dir
+mv _build/default/rel/przepraszamco/przepraszamco-0.1.0.tar.gz run_dir
+cd run_dir
+tar -zxf przepraszamco-0.1.0.tar.gz
+bin/przepraszamco start
