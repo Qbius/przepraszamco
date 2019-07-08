@@ -1,4 +1,4 @@
-var ws = new WebSocket("ws://52.29.19.43:8080/websocket");
+var ws = new WebSocket("ws://przepraszam.co/websocket");
 ws.onopen = () => ws.send("A winc to tok");
 ws.onmessage = (event) => console.log(event.data);
 

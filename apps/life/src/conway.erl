@@ -2,7 +2,7 @@
 -export([conway/1]).
 
 conway(State) ->
-    Neighbours = lists:append(lists:map(fun({X, Y}) -> [{X + XOffset, Y + YOffset} || XOffset <- lists:seq(-1, 1), YOffset <- lists:seq(-1, 1), XOffset =/= 0 orelse YOffset =/= 0] end, State)),
+    Neighbours = lists:append(lists:map(fun([X, Y]) -> [[X + XOffset, Y + YOffset] || XOffset <- lists:seq(-1, 1), YOffset <- lists:seq(-1, 1), XOffset =/= 0 orelse YOffset =/= 0] end, State)),
     process_neighbour_map(neighbours_to_map(Neighbours), State).
 
 neighbours_to_map(Neighbours) ->

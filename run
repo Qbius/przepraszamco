@@ -1,4 +1,5 @@
 #!/bin/bash
+cd /home/ubuntu/source/przepraszamco
 sudo systemctl stop przepraszamco
 rebar3 tar
 rm -rf run_dir

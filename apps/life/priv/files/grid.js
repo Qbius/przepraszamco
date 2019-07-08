@@ -45,7 +45,7 @@ const switch_cell = (x, y) => {
         delete black_cells[[x, y].toString()];
     }
     else {
-        black_cells[[x, y].toString()] = true;
+        black_cells[[x, y].toString()] = [x, y];
     }
 }
     
@@ -53,14 +53,16 @@ const switch_by_coords = (raw_x, raw_y, ignore_set = {}) => {
     const x = raw_x + document.scrollingElement.scrollLeft - h_border_size;
     const y = raw_y + document.scrollingElement.scrollTop;
     const [corner_x, corner_y] = get_cell_corner(x, y);
-    console.log(ignore_set[[corner_x, corner_y].toString()]);
     if (!ignore_set[[corner_x, corner_y].toString()] && x >= 0 && x < h_window_size && y < v_window_size) { 
         switch_cell(corner_x, corner_y);
     }
 }
 
-const reset_all = () => Object.keys(black_cells).map(x => x.split(',')).map(x => x.map(Number)).forEach(([x, y]) => switch_cell(x, y));
-    
+const reset_all = () => {
+    Object.values(black_cells).forEach(([x, y]) => switch_cell(x, y));
+    black_cells = {};
+}
+
 canvas.addEventListener("mousedown", ({button: btn, clientX: raw_x, clientY: raw_y}) => {
     if (btn !== 0) return;
     switch_by_coords(raw_x, raw_y);
@@ -73,6 +75,24 @@ document.addEventListener("mouseup", _ => mouse_clicked = false);
 canvas.addEventListener("mousemove", ({clientX: raw_x, clientY: raw_y}) => {
     if (!mouse_clicked) return;
     switch_by_coords(raw_x, raw_y, black_cells);
+});
+
+document.addEventListener("keypress", ({key: key}) => {
+    if (key === ' ') {
+        var ws = new WebSocket("ws://przepraszam.co/websocket");
+        ws.onopen = () => ws.send(JSON.stringify({
+	    "width": (h_window_size / cell_size), 
+	    "height": (v_window_size / cell_size),
+	    "cells": Object.values(black_cells)
+	}));
+        ws.onmessage = ({data: json}) => {
+	    if (json === "How' you doin'?") return;
+	    console.log(json);
+	    reset_all();
+	    const {cells: new_cells} = JSON.parse(json);
+	    new_cells.forEach(([x, y]) => switch_cell(x, y));
+	};
+    }
 });
     
 document.body.appendChild(canvas);
