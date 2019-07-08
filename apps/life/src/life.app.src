@@ -1,0 +1,12 @@
+{application, life, [
+    {description, "game of life"},
+    {vsn, "1.0.0"},
+    {modules, []},
+    {mod, {hello_erlang_app, []}},
+    {applications, [
+        kernel,
+        stdlib,
+        cowboy,
+        jiffy
+    ]}
+]}.
