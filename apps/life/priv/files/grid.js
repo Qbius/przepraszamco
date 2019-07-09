@@ -6,6 +6,8 @@ const process_window_size = pixel_count => [pixel_count % 40, pixel_count - (pix
 const [h_border_size, h_window_size] = process_window_size(width);
 const [v_border_size, v_window_size] = process_window_size(height);
 
+let enable_drawing = true;
+
 let canvas = document.createElement("CANVAS");
 canvas.width = h_window_size;
 canvas.height = v_window_size;
@@ -50,7 +52,8 @@ const switch_cell = (x, y) => {
 }
     
 const switch_by_coords = (raw_x, raw_y, ignore_set = {}) => {
-    const x = raw_x + document.scrollingElement.scrollLeft - h_border_size;
+    if (!enable_drawing) return;
+    const x = raw_x + document.scrollingElement.scrollLeft - h_border_size / 2;
     const y = raw_y + document.scrollingElement.scrollTop;
     const [corner_x, corner_y] = get_cell_corner(x, y);
     if (!ignore_set[[corner_x, corner_y].toString()] && x >= 0 && x < h_window_size && y < v_window_size) { 
@@ -77,9 +80,11 @@ canvas.addEventListener("mousemove", ({clientX: raw_x, clientY: raw_y}) => {
     switch_by_coords(raw_x, raw_y, black_cells);
 });
 
-document.addEventListener("keypress", ({key: key}) => {
-    if (key === ' ') {
-        var ws = new WebSocket("ws://przepraszam.co/websocket");
+let ws;
+const play_pause = () => {
+    if (enable_drawing && Object.keys(black_cells).length > 0) {
+	enable_drawing = false;
+        ws = new WebSocket("ws://przepraszam.co/websocket");
         ws.onopen = () => ws.send(JSON.stringify({
 	    "width": (h_window_size / cell_size), 
 	    "height": (v_window_size / cell_size),
@@ -87,13 +92,21 @@ document.addEventListener("keypress", ({key: key}) => {
 	}));
         ws.onmessage = ({data: json}) => {
 	    if (json === "How' you doin'?") return;
-	    console.log(json);
 	    reset_all();
 	    const {cells: new_cells} = JSON.parse(json);
 	    new_cells.forEach(([x, y]) => switch_cell(x, y));
+	    setTimeout(() => ws.send(JSON.stringify({"get": "next"})), 100);
 	};
     }
-});
+    else {
+	ws.close();
+        enable_drawing = true;
+    }
+};
     
+document.addEventListener("keypress", ({key: key}) => {
+    if (key === ' ') play_pause();
+});
+
 document.body.appendChild(canvas);
 
