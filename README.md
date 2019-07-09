@@ -1,1 +1,1 @@
-ajajaj
+http://przepraszam.co/life
