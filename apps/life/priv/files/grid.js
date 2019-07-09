@@ -84,6 +84,7 @@ let ws;
 const play_pause = () => {
     if (enable_drawing && Object.keys(black_cells).length > 0) {
 	enable_drawing = false;
+	document.getElementById("resetBtn").disabled = true;
         ws = new WebSocket("ws://przepraszam.co/websocket");
         ws.onopen = () => ws.send(JSON.stringify({
 	    "width": (h_window_size / cell_size), 
@@ -92,6 +93,10 @@ const play_pause = () => {
 	}));
         ws.onmessage = ({data: json}) => {
 	    if (json === "How' you doin'?") return;
+	    if (json === "Stagnation") {
+	    	play_pause();
+		return;
+	    }
 	    reset_all();
 	    const {cells: new_cells} = JSON.parse(json);
 	    new_cells.forEach(([x, y]) => switch_cell(x, y));
@@ -101,6 +106,7 @@ const play_pause = () => {
     else {
 	ws.close();
         enable_drawing = true;
+	document.getElementById("resetBtn").disabled = false;
     }
 };
     

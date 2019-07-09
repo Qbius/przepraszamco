@@ -22,7 +22,10 @@ websocket_handle({text, Msg}, State) ->
 		{reply, {text, jiffy:encode(#{<<"cells">> => Result})}, State#ws_state{ cells = Result }};
 	    #{<<"get">> := <<"next">>} ->
 		Result = conway:conway(State#ws_state.cells),
-		{reply, {text, jiffy:encode(#{<<"cells">> => Result})}, State#ws_state{ cells = Result }};
+		{reply, {text, case Result =:= State#ws_state.cells of
+		    false -> jiffy:encode(#{<<"cells">> => Result});
+                    true -> <<"Stagnation">>
+                end}, State#ws_state{ cells = Result }};
 	    _ ->
 	        {reply, {text, <<"hm">>}, State}
         end;
