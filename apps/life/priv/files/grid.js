@@ -1,6 +1,6 @@
 const width = window.innerWidth;
 const height = window.innerHeight - 15;
-const cell_size = 20;
+const cell_size = 10;
 
 const process_window_size = pixel_count => [pixel_count % 40, pixel_count - (pixel_count % 40)];
 const [h_border_size, h_window_size] = process_window_size(width);
