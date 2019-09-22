@@ -9,6 +9,9 @@ start(_Type, _Args) ->
 	    {'_', [
 	    	{"/", cowboy_static, {priv_file, life, "index.html"}},
 		{"/life", cowboy_static, {priv_file, life, "files/grid.html"}},
+		{"/buzzfeed", cowboy_static, {priv_file, life, "files/buzzfeed.html"}},
+
+
 		{"/websocket", ws_h, []},
 		{"/files/[...]", cowboy_static, {priv_dir, life, "files"}},
 		{"/images/[...]", cowboy_static, {priv_dir, life, "images"}}
