@@ -1,0 +1,13 @@
+[Unit]
+Description=przepraszamco
+After=network.target
+
+[Service]
+Type=forking
+User=pi
+WorkingDirectory=/home/pi/przepraszamco
+ExecStart=/home/pi/przepraszamco/run_dir/bin/przepraszamco start
+ExecStop=/home/pi/przepraszamco/run_dir/bin/przepraszamco stop
+
+[Install]
+WantedBy=default.target

@@ -1,4 +1,5 @@
-var ws = new WebSocket("ws://przepraszam.co/websocket");
+const protocol = location.protocol === 'http:' ? 'ws:' : 'wss:';
+var ws = new WebSocket(protocol + '//' + location.host + '/websocket');
 ws.onopen = () => ws.send("A winc to tok");
 ws.onmessage = (event) => console.log(event.data);
 
