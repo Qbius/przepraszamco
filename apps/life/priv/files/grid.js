@@ -85,7 +85,8 @@ const play_pause = () => {
     if (enable_drawing && Object.keys(black_cells).length > 0) {
 	enable_drawing = false;
 	document.getElementById("resetBtn").disabled = true;
-        ws = new WebSocket("ws://przepraszam.co/websocket");
+        const protocol = location.protocol === 'http:' ? 'ws:' : 'wss:';
+        ws = new WebSocket(protocol + '//' + location.host + '/websocket');
         ws.onopen = () => ws.send(JSON.stringify({
 	    "width": (h_window_size / cell_size), 
 	    "height": (v_window_size / cell_size),
